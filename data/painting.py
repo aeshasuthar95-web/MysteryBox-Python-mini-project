@@ -1,0 +1,172 @@
+"""
+data/painting.py - case: The Stolen Painting
+
+One case = story, culprit, places, suspects, clues and final questions.
+See data/__init__.py for an explanation of every field.
+"""
+
+CASE = {
+    "title": "The Stolen Painting",
+    "story": "City Art Museum, 8:30 PM. The night exhibition is full of guests. "
+             "Suddenly, the famous painting 'Golden Sunrise' is gone from Hall 3! "
+             "The alarm did not ring. You are Detective Sam. "
+             "Find the thief before the museum opens tomorrow!",
+    "culprit": "maya",
+    "locations": {
+        "hall3": "Hall 3 (Gallery)",
+        "security": "Security Room",
+        "workshop": "Restoration Workshop",
+        "dock": "Loading Dock",
+        "desk": "Front Desk",
+    },
+    "suspects": {
+        "carl": {
+            "name": "Carl", "role": "Security Guard",
+            "intro": "Walks around the museum every hour.",
+            "testimony": [
+                {"id": "g1", "requires": [],
+                 "text": "I walked around every hour. Everything looked normal to me.",
+                 "unlocks": None},
+                {"id": "g2", "requires": ["codelog"],
+                 "text": "Only two people have the workshop code: Maya and Ben.",
+                 "unlocks": "carl_tip"},
+            ],
+        },
+        "nina": {
+            "name": "Nina", "role": "Tour Guide",
+            "intro": "Loves art and talks a lot.",
+            "testimony": [
+                {"id": "n1", "requires": [],
+                 "text": "I was giving a tour to a school group in Hall 1 until nine.",
+                 "unlocks": None},
+                {"id": "n2", "requires": ["camera"],
+                 "text": "At 8:45 I walked past Hall 3. Maya was standing near the "
+                         "painting. She often checks the paintings, so I did not worry.",
+                 "unlocks": "nina_witness"},
+            ],
+        },
+        "victor": {
+            "name": "Victor", "role": "Art Collector",
+            "intro": "A rich guest who wanted to buy the painting.",
+            "testimony": [
+                {"id": "v1", "requires": [],
+                 "text": "I love that painting. I asked to buy it last month, but the "
+                         "museum said no.",
+                 "unlocks": None},
+                {"id": "v2", "requires": ["guestbook"],
+                 "text": "Yes, I left early at 8:30. I was bored. I buy art, "
+                         "I do not steal it!",
+                 "unlocks": None},
+            ],
+        },
+        "maya": {
+            "name": "Maya", "role": "Art Restorer",
+            "intro": "Quiet and careful. Always has paint on her hands.",
+            "testimony": [
+                {"id": "r1", "requires": [],
+                 "text": "I was in my workshop fixing an old frame all night.",
+                 "unlocks": None},
+                {"id": "r2", "requires": ["camera"],
+                 "text": "A grey apron? Half of the museum wears grey. "
+                         "That proves nothing!",
+                 "unlocks": None},
+                {"id": "r3", "requires": ["buyer"],
+                 "text": "(she turns pale) That letter is not mine! I... "
+                         "I want to go home now.",
+                 "unlocks": None},
+            ],
+        },
+        "ben": {
+            "name": "Ben", "role": "Night Cleaner",
+            "intro": "Cleans the halls every night.",
+            "testimony": [
+                {"id": "j1", "requires": [],
+                 "text": "I clean the halls every night. I never touch the paintings!",
+                 "unlocks": None},
+                {"id": "j2", "requires": ["carl_tip"],
+                 "text": "Yes, I have a workshop code, but I only use it to clean the "
+                         "floor. Maya uses it every day.",
+                 "unlocks": None},
+                {"id": "j3", "requires": ["ben_alibi"],
+                 "text": "I was cleaning the lobby with the front desk clerk. "
+                         "Check the schedule!",
+                 "unlocks": None},
+            ],
+        },
+    },
+    "clues": {
+        "emptyframe": {"place": "hall3", "requires": [],
+                       "text": "The frame is not broken. The painting was taken out very carefully."},
+        "dust": {"place": "hall3", "requires": ["emptyframe"],
+                 "text": "A few canvas threads are on the floor. The thief used a thin, sharp knife."},
+        "alarmoff": {"place": "security", "requires": [],
+                     "text": "The alarm was switched off at 8:40 PM with a real staff code. Nobody forced it."},
+        "codelog": {"place": "security", "requires": ["alarmoff"],
+                    "text": "The code log shows the code used belongs to the Restoration Workshop."},
+        "camera": {"place": "security", "requires": ["carl_tip"],
+                   "text": "Camera 4: a person in a grey apron pushes a cart to the loading dock at 8:50 PM. The face is hidden."},
+        "tube": {"place": "dock", "requires": [],
+                 "text": "A long empty cardboard tube lies behind the loading dock. It is the right size for a rolled painting."},
+        "vanlog": {"place": "dock", "requires": ["camera"],
+                   "text": "Dock book: an art-shipping van came at 8:55 PM. The workshop ordered it for 'a frame delivery'."},
+        "apron": {"place": "workshop", "requires": ["camera"],
+                  "text": "A grey work apron hangs here. In its pocket are a thin knife and a small piece of canvas."},
+        "buyer": {"place": "workshop", "requires": ["apron"],
+                  "text": "A letter to Maya from a private buyer: 'Bring me the sunrise painting and I will pay one million.'"},
+        "guestbook": {"place": "desk", "requires": [],
+                      "text": "Guest book: Victor signed out at 8:30 PM, ten minutes before the alarm went off."},
+        "ben_alibi": {"place": "desk", "requires": [],
+                      "text": "The night schedule shows Ben cleaned the lobby with the front desk clerk from 8:30 to 9:15 PM."},
+        "carl_tip": {"place": None, "requires": [],
+                     "text": "Carl says only Maya and Ben have the Restoration Workshop code."},
+        "nina_witness": {"place": None, "requires": [],
+                         "text": "Nina saw Maya near the painting in Hall 3 at about 8:45 PM."},
+    },
+    "questions": [
+        {"question": "What did the thief use to cut the painting out?",
+         "options": ["A thin, sharp knife", "A big axe", "A pair of scissors", "A saw"],
+         "answer": "A thin, sharp knife"},
+        {"question": "At what time was the alarm switched off?",
+         "options": ["7:00 PM", "8:40 PM", "10:15 PM", "11:30 PM"],
+         "answer": "8:40 PM"},
+        {"question": "Which room does the code used on the alarm belong to?",
+         "options": ["The Restoration Workshop", "The Security Room",
+                     "The Front Desk", "The Loading Dock"],
+         "answer": "The Restoration Workshop"},
+        {"question": "Who told you that only two people have the workshop code?",
+         "options": ["Carl the guard", "Nina the guide",
+                     "Victor the collector", "Ben the cleaner"],
+         "answer": "Carl the guard"},
+        {"question": "What was the person on Camera 4 wearing?",
+         "options": ["A grey apron", "A red coat", "A white lab coat", "A blue uniform"],
+         "answer": "A grey apron"},
+        {"question": "What did Nina see at about 8:45 PM?",
+         "options": ["Maya near the painting", "Ben with a cart",
+                     "Victor with a camera", "Carl on the phone"],
+         "answer": "Maya near the painting"},
+        {"question": "What was found in the pocket of the grey apron?",
+         "options": ["A thin knife and a piece of canvas", "A key and a coin",
+                     "A phone and a map", "A paint brush and a bottle"],
+         "answer": "A thin knife and a piece of canvas"},
+        {"question": "Why did the thief steal the painting?",
+         "options": ["To sell it to a private buyer for a lot of money",
+                     "To keep it at home",
+                     "To get revenge on the museum",
+                     "To play a joke"],
+         "answer": "To sell it to a private buyer for a lot of money"},
+        {"question": "Who was cleaning the lobby from 8:30 to 9:15 PM?",
+         "options": ["Ben", "Carl", "Nina", "Victor"],
+         "answer": "Ben"},
+        {"question": "What was found behind the loading dock?",
+         "options": ["A long empty cardboard tube", "A broken camera",
+                     "A pair of gloves", "A red scarf"],
+         "answer": "A long empty cardboard tube"},
+        {"question": "Which van came to the loading dock at 8:55 PM?",
+         "options": ["An art-shipping van ordered by the workshop", "A pizza van",
+                     "A police van", "A school bus"],
+         "answer": "An art-shipping van ordered by the workshop"},
+        {"question": "At what time did Victor leave the museum?",
+         "options": ["8:30 PM", "9:30 PM", "10:30 PM", "He never left"],
+         "answer": "8:30 PM"},
+    ],
+}
