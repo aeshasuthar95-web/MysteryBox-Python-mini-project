@@ -22,4 +22,4 @@ MysteryBox is a Python mini project developed to demonstrate Python programming 
 ## Purpose
 Created as a Python mini project to practice programming and application development.
 
-##Documentation contain report and ppt of this mini project.
+##Documentation contain ppt of this mini project.
